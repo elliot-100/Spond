@@ -15,21 +15,22 @@ aiohttp = "^3.8.5"
 pytest = "^8.1.1"
 pytest-asyncio = ">=0.23.6,<0.26.0"
 ruff = "^0.9.6"
+mypy = "*"  # TEMP dev
+pdoc = "*"  # TEMP dev
 
 [tool.ruff]
 target-version = "py39"  # Ruff doesn't yet infer this from [tool.poetry.dependencies]
 
 [tool.ruff.lint]
-select = [
-    "ANN201",  # Missing return type annotation for public function
-    "E",  # pycodestyle
-    "F",  # Pyflakes
-    "I",  # isort
-    "SIM",  # flake8-simplify
-    "UP",  # pyupgrade
-]
+select = ["ALL"]
 ignore = [
+    "D100",  # Missing docstring in public module
+    "D104",  # Missing docstring in public package
+    "D205",  # 1 blank line required between summary line and description
     "E501",  # Line too long: needs code refactors first
+    # Ignore rules that conflict with Ruff formatter:
+    "COM812",  # Trailing comma missing
+    "ISC001",  # Implicitly concatenated string literals on one line
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -45,6 +46,24 @@ ignore = [
 # In tests:
 # - Don't enforce type annotations for now
 "**/{tests}/*" = ["ANN"]
+
+[tool.mypy]  # TEMP dev
+enable_error_code = ["ignore-without-code"]  # Require specific codes for ignores
+warn_unused_configs = true
+strict = true
+# disallow_any_unimported = true  # Disallow Any types resulting from unfollowed imports
+# no_implicit_optional = true  # Don't assume arguments with default values of None
+# are Optional
+
+tool.ruff.lint.per-file-ignores]
+# Ignore rules that aren't relevant in tests:
+"**/{tests}/*" = [
+    "S101",  # Use of assert detected
+    "F841",  # Local variable is assigned to but never used (triggered by testing raises)
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
