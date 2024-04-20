@@ -98,28 +98,29 @@ class Spond(_SpondBase):
         """
         if not self.groups:
             await self.get_groups()
-        for group in self.groups:
-            for member in group["members"]:
-                if (
-                    member["id"] == user
-                    or ("email" in member and member["email"]) == user
-                    or member["firstName"] + " " + member["lastName"] == user
-                    or ("profile" in member and member["profile"]["id"] == user)
-                ):
-                    return member
-                if "guardians" in member:
-                    for guardian in member["guardians"]:
-                        if (
-                            guardian["id"] == user
-                            or ("email" in guardian and guardian["email"]) == user
-                            or guardian["firstName"] + " " + guardian["lastName"]
-                            == user
-                            or (
-                                "profile" in guardian
-                                and guardian["profile"]["id"] == user
-                            )
-                        ):
-                            return guardian
+        if self.groups is not None:
+            for group in self.groups:
+                for member in group["members"]:
+                    if (
+                        member["id"] == user
+                        or ("email" in member and member["email"]) == user
+                        or member["firstName"] + " " + member["lastName"] == user
+                        or ("profile" in member and member["profile"]["id"] == user)
+                    ):
+                        return member
+                    if "guardians" in member:
+                        for guardian in member["guardians"]:
+                            if (
+                                guardian["id"] == user
+                                or ("email" in guardian and guardian["email"]) == user
+                                or guardian["firstName"] + " " + guardian["lastName"]
+                                == user
+                                or (
+                                    "profile" in guardian
+                                    and guardian["profile"]["id"] == user
+                                )
+                            ):
+                                return guardian
         errmsg = f"No person matched with identifier '{user}'."
         raise KeyError(errmsg)
 
@@ -354,9 +355,10 @@ class Spond(_SpondBase):
         """
         if not self.events:
             await self.get_events()
-        for event in self.events:
-            if event["id"] == uid:
-                break
+        if self.events is not None:
+            for event in self.events:
+                if event["id"] == uid:
+                    break
 
         url = f"{self._API_BASE_URL}sponds/{uid}"
 
