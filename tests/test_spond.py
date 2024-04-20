@@ -4,6 +4,7 @@ import pytest
 
 
 from spond.spond import Spond
+from spond.base import SpondBase
 
 MOCK_USERNAME, MOCK_PASSWORD = "MOCK_USERNAME", "MOCK_PASSWORD"
 MOCK_TOKEN = "MOCK_TOKEN"
@@ -17,7 +18,7 @@ def mock_require_authentication(func):
     return wrapper
 
 
-Spond.require_authentication = mock_require_authentication(Spond.get_event)
+SpondBase.require_authentication = mock_require_authentication(Spond.get_event)
 
 
 @pytest.fixture
