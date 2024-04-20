@@ -16,6 +16,9 @@ black = "^24.10.0"
 isort = "^5.11.4"
 pytest = "^8.1.1"
 pytest-asyncio = "^0.23.6"
+mypy = "*"  # TEMP dev
+pdoc = "*"  # TEMP dev
+ruff = "*"  # TEMP dev
 
 [tool.black]
 line-length = 88
@@ -23,6 +26,46 @@ target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.isort]
 profile = "black"
+
+[tool.mypy]  # TEMP dev
+enable_error_code = ["ignore-without-code"]  # Require specific codes for ignores
+warn_unused_configs = true
+strict = true
+# disallow_any_unimported = true  # Disallow Any types resulting from unfollowed imports
+# no_implicit_optional = true  # Don't assume arguments with default values of None
+# are Optional
+
+[tool.ruff]
+target-version = "py38"  # Ruff doesn't respect Python dependency in [tool.poetry
+# .dependencies]
+
+[tool.ruff.lint]
+
+select = ["ALL"]
+
+# Ignore rules that conflict with Ruff formatter:
+    # COM812 Trailing comma missing
+    # ISC001 Implicitly concatenated string literals on one line
+
+# Ignore other rules:
+    # D205 1 blank line required between summary line and description
+
+ignore = ["COM812", "ISC001", "D205",
+
+# gradual
+    # D104 Missing docstring in public package
+    # D100 Missing docstring in public module
+"D104","D100",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore rules that aren't relevant in tests:
+    # S101 Use of assert detected
+    # F841 Local variable is assigned to but never used (triggered by testing raises)
+"**/{tests}/*" = ["S101", "F841"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
