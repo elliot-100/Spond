@@ -14,13 +14,13 @@ if TYPE_CHECKING:
 
 class Spond(_SpondBase):
 
-    DT_FORMAT = "%Y-%m-%dT00:00:00.000Z"
-
+    _API_BASE_URL: ClassVar = "https://api.spond.com/core/v1/"
+    _DT_FORMAT: ClassVar = "%Y-%m-%dT00:00:00.000Z"
     _EVENT: ClassVar = "event"
     _GROUP: ClassVar = "group"
 
     def __init__(self, username: str, password: str) -> None:
-        super().__init__(username, password, "https://api.spond.com/core/v1/")
+        super().__init__(username, password, self._API_BASE_URL)
         self.chat_url = None
         self.auth = None
         self.groups: list[JSONDict] | None = None
@@ -28,7 +28,7 @@ class Spond(_SpondBase):
         self.messages: list[JSONDict] | None = None
 
     async def login_chat(self) -> None:
-        api_chat_url = f"{self.api_url}chat"
+        api_chat_url = f"{self._API_BASE_URL}chat"
         r = await self.clientsession.post(api_chat_url, headers=self.auth_headers)
         result = await r.json()
         self.chat_url = result["url"]
@@ -46,7 +46,7 @@ class Spond(_SpondBase):
             are available.
 
         """
-        url = f"{self.api_url}groups/"
+        url = f"{self._API_BASE_URL}groups/"
         async with self.clientsession.get(url, headers=self.auth_headers) as r:
             self.groups = await r.json()
             return self.groups
@@ -287,19 +287,19 @@ class Spond(_SpondBase):
              are available.
 
         """
-        url = f"{self.api_url}sponds/"
+        url = f"{self._API_BASE_URL}sponds/"
         params = {
             "max": str(max_events),
             "scheduled": str(include_scheduled),
         }
         if max_end:
-            params["maxEndTimestamp"] = max_end.strftime(self.DT_FORMAT)
+            params["maxEndTimestamp"] = max_end.strftime(self._DT_FORMAT)
         if max_start:
-            params["maxStartTimestamp"] = max_start.strftime(self.DT_FORMAT)
+            params["maxStartTimestamp"] = max_start.strftime(self._DT_FORMAT)
         if min_end:
-            params["minEndTimestamp"] = min_end.strftime(self.DT_FORMAT)
+            params["minEndTimestamp"] = min_end.strftime(self._DT_FORMAT)
         if min_start:
-            params["minStartTimestamp"] = min_start.strftime(self.DT_FORMAT)
+            params["minStartTimestamp"] = min_start.strftime(self._DT_FORMAT)
         if group_id:
             params["groupId"] = group_id
         if subgroup_id:
@@ -356,7 +356,7 @@ class Spond(_SpondBase):
             if event["id"] == uid:
                 break
 
-        url = f"{self.api_url}sponds/{uid}"
+        url = f"{self._API_BASE_URL}sponds/{uid}"
 
         base_event: JSONDict = {
             "heading": None,
