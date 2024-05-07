@@ -8,6 +8,7 @@ Doesn't yet use `get_person(user)` or any `send_`, `update_` methods."""
 import asyncio
 
 from config import password, username, club_id
+import tempfile
 from spond import spond, club
 
 DUMMY_ID = "DUMMY_ID"
@@ -39,6 +40,17 @@ async def main() -> None:
     print(f"{len(messages)} messages:")
     for i, message in enumerate(messages):
         print(f"[{i}] {_message_summary(message)}")
+
+    # ATTENDANCE EXPORT
+
+    print("\nGetting a random attendance report...")
+    e = events[0]
+    data = await s.get_export(e["id"])
+    with tempfile.NamedTemporaryFile(
+        mode="wb", suffix=".xlsx", delete=False
+    ) as temp_file:
+        temp_file.write(data)
+        print(f"Check out {temp_file.name}")
 
     await s.clientsession.close()
 

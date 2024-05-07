@@ -1,8 +1,7 @@
 """Test suite for Spond class."""
 
 import pytest
-
-
+from unittest.mock import AsyncMock, patch
 from spond.spond import Spond
 from spond.base import SpondBase
 
@@ -132,3 +131,28 @@ async def test_get_group__blank_id_raises_exception(mock_groups, mock_token):
 
     with pytest.raises(IndexError):
         await s.get_group("")
+
+
+@pytest.mark.asyncio
+@patch("aiohttp.ClientSession.get")
+async def test_get_export(mock_get, mock_token):
+    s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
+    s.token = mock_token
+
+    mock_binary = b"\x68\x65\x6c\x6c\x6f\x77\x6f\x72\x6c\x64"  # helloworld
+    mock_get.return_value.__aenter__.return_value.status = 200
+    mock_get.return_value.__aenter__.return_value.read = AsyncMock(
+        return_value=mock_binary
+    )
+
+    data = await s.get_export(uid="ID1")
+
+    mock_url = "https://api.spond.com/core/v1/sponds/ID1/export"
+    mock_get.assert_called_once_with(
+        mock_url,
+        headers={
+            "content-type": "application/json",
+            "Authorization": f"Bearer {mock_token}",
+        },
+    )
+    assert data == mock_binary
