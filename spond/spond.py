@@ -27,15 +27,14 @@ class Spond(_SpondBase):
         self.auth = result["auth"]
 
     @_SpondBase.require_authentication
-    async def get_groups(self):
+    async def get_groups(self) -> Optional[List[dict]]:
         """
         Get all groups.
         Subject to authenticated user's access.
 
         Returns
         -------
-        list of dict
-            Groups; each group is a dict.
+        List of groups, each represented by a dict; or None.
         """
         url = f"{self.api_url}groups/"
         async with self.clientsession.get(url, headers=self.auth_headers) as r:
@@ -208,7 +207,7 @@ class Spond(_SpondBase):
         max_start: Optional[datetime] = None,
         min_start: Optional[datetime] = None,
         max_events: int = 100,
-    ) -> List[dict]:
+    ) -> Optional[List[dict]]:
         """
         Get events.
         Subject to authenticated user's access.
@@ -247,8 +246,7 @@ class Spond(_SpondBase):
 
         Returns
         -------
-        list of dict
-            Events; each event is a dict.
+        List of events, each represented by a dict; or None.
         """
         url = f"{self.api_url}sponds/"
         params = {
