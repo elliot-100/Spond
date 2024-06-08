@@ -85,6 +85,11 @@ class TestEventMethods:
         )
         assert event == self.MOCK_EVENT
 
+    @pytest.fixture
+    def mock_no_events(self) -> None:
+        """Mock no available events."""
+        return None
+
     @pytest.mark.asyncio
     @patch("aiohttp.ClientSession.get")
     async def test_get_event__not_found_raises_keyerror(
@@ -201,6 +206,19 @@ class TestEventMethods:
         assert result is not s.events
 
     @pytest.mark.asyncio
+    async def test_get_event__no_events_no_match_raises_exception(
+        self, mock_no_events, mock_token
+    ):
+        """Test that a non-matched `id` raises KeyError with no events available."""
+
+        s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
+        s.events = mock_no_events
+        s.token = mock_token
+
+        with pytest.raises(KeyError):
+            await s.get_event("ID3")
+
+    @pytest.mark.asyncio
     @patch("aiohttp.ClientSession.put")
     async def test_change_response(self, mock_put, mock_payload, mock_token) -> None:
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
@@ -247,6 +265,11 @@ class TestGroupMethods:
                 "name": "Group Two",
             },
         ]
+
+    @pytest.fixture
+    def mock_no_groups(self) -> None:
+        """Mock no available groups."""
+        return None
 
     @pytest.mark.asyncio
     async def test_get_group__happy_path(
@@ -352,6 +375,19 @@ class TestSendMessage:
 
         with pytest.raises(ValueError, match="user and group_uid"):
             await s.send_message(text="hello", group_uid="GROUP1")
+
+    @pytest.mark.asyncio
+    async def test_get_group__no_groups_no_match_raises_exception(
+        self, mock_no_groups, mock_token
+    ):
+        """Test that a non-matched `id` raises KeyError with no groups available."""
+
+        s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
+        s.groups = mock_no_groups
+        s.token = mock_token
+
+        with pytest.raises(KeyError):
+            await s.get_group("ID3")
 
 
 class TestExportMethod:
