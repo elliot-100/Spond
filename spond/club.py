@@ -16,7 +16,7 @@ class SpondClub(_SpondBase):
     @_SpondBase.require_authentication
     async def get_transactions(
         self, club_id: str, skip: Optional[int] = None, max_items: int = 100
-    ) -> list[DictFromJSON]:
+    ) -> Optional[list[DictFromJSON]]:
         """
         Retrieves a list of transactions/payments for a specified club.
 
