@@ -1,3 +1,5 @@
+"""Module containing `SpondClub` class."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
@@ -9,7 +11,10 @@ from .base import _SpondBase
 
 
 class SpondClub(_SpondBase):
+    """Used to extract data from the Spond Club API."""
+
     def __init__(self, username: str, password: str) -> None:
+        """Create a new `SpondClub` instance."""
         super().__init__(username, password, "https://api.spond.com/club/v1/")
         self.transactions = None
 

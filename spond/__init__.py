@@ -1,3 +1,5 @@
+"""Top-level module."""
+
 from typing import Any, Dict
 
 from typing_extensions import TypeAlias

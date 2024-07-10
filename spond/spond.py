@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Module containing `Spond` class."""
 
 from __future__ import annotations
 
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class Spond(_SpondBase):
+    """Used to retrieve data from the Spond API."""
 
     DT_FORMAT = "%Y-%m-%dT00:00:00.000Z"
 
@@ -20,6 +22,7 @@ class Spond(_SpondBase):
     _GROUP: ClassVar = "group"
 
     def __init__(self, username: str, password: str) -> None:
+        """Create a new `Spond` instance."""
         super().__init__(username, password, "https://api.spond.com/core/v1/")
         self._chat_url = None
         self._auth = None
