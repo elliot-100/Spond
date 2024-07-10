@@ -32,7 +32,7 @@ class Spond(_SpondBase):
         self.auth = result["auth"]
 
     @_SpondBase.require_authentication
-    async def get_groups(self) -> list[dict]:
+    async def get_groups(self) -> Optional[list[dict]]:
         """
         Get all groups.
         Subject to authenticated user's access.
@@ -216,7 +216,7 @@ class Spond(_SpondBase):
         max_start: Optional[datetime] = None,
         min_start: Optional[datetime] = None,
         max_events: int = 100,
-    ) -> list[dict]:
+    ) -> Optional[list[dict]]:
         """
         Get events.
         Subject to authenticated user's access.
