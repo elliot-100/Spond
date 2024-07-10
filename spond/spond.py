@@ -12,8 +12,7 @@ if TYPE_CHECKING:
 
 class Spond(_SpondBase):
 
-    DT_FORMAT = "%Y-%m-%dT00:00:00.000Z"
-
+    _DT_FORMAT: ClassVar = "%Y-%m-%dT00:00:00.000Z"
     _EVENT: ClassVar = "event"
     _GROUP: ClassVar = "group"
 
@@ -264,13 +263,13 @@ class Spond(_SpondBase):
             "scheduled": str(include_scheduled),
         }
         if max_end:
-            params["maxEndTimestamp"] = max_end.strftime(self.DT_FORMAT)
+            params["maxEndTimestamp"] = max_end.strftime(self._DT_FORMAT)
         if max_start:
-            params["maxStartTimestamp"] = max_start.strftime(self.DT_FORMAT)
+            params["maxStartTimestamp"] = max_start.strftime(self._DT_FORMAT)
         if min_end:
-            params["minEndTimestamp"] = min_end.strftime(self.DT_FORMAT)
+            params["minEndTimestamp"] = min_end.strftime(self._DT_FORMAT)
         if min_start:
-            params["minStartTimestamp"] = min_start.strftime(self.DT_FORMAT)
+            params["minStartTimestamp"] = min_start.strftime(self._DT_FORMAT)
         if group_id:
             params["groupId"] = group_id
         if subgroup_id:
