@@ -1,11 +1,15 @@
 """Test suite for Spond class."""
 
+from typing import TYPE_CHECKING, List
 from unittest.mock import AsyncMock, patch
 
 import pytest
 
 from spond.base import _SpondBase
 from spond.spond import Spond
+
+if TYPE_CHECKING:
+    from spond import DictFromJSON
 
 MOCK_USERNAME, MOCK_PASSWORD = "MOCK_USERNAME", "MOCK_PASSWORD"
 MOCK_TOKEN = "MOCK_TOKEN"
@@ -36,7 +40,7 @@ def mock_payload():
 class TestEventMethods:
 
     @pytest.fixture
-    def mock_events(self):
+    def mock_events(self) -> List[DictFromJSON]:
         """Mock a minimal list of events."""
         return [
             {
@@ -122,7 +126,7 @@ class TestEventMethods:
 
 class TestGroupMethods:
     @pytest.fixture
-    def mock_groups(self):
+    def mock_groups(self) -> List[DictFromJSON]:
         """Mock a minimal list of groups."""
         return [
             {
