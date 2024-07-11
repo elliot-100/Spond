@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar, Optional
 
+from . import is_list_of_dict
 from .base import _SpondBase
 
 if TYPE_CHECKING:
@@ -92,28 +93,29 @@ class Spond(_SpondBase):
         """
         if not self.groups:
             await self.get_groups()
-        for group in self.groups:
-            for member in group["members"]:
-                if (
-                    member["id"] == user
-                    or ("email" in member and member["email"]) == user
-                    or member["firstName"] + " " + member["lastName"] == user
-                    or ("profile" in member and member["profile"]["id"] == user)
-                ):
-                    return member
-                if "guardians" in member:
-                    for guardian in member["guardians"]:
-                        if (
-                            guardian["id"] == user
-                            or ("email" in guardian and guardian["email"]) == user
-                            or guardian["firstName"] + " " + guardian["lastName"]
-                            == user
-                            or (
-                                "profile" in guardian
-                                and guardian["profile"]["id"] == user
-                            )
-                        ):
-                            return guardian
+        if is_list_of_dict(self.groups):
+            for group in self.groups:
+                for member in group["members"]:
+                    if (
+                        member["id"] == user
+                        or ("email" in member and member["email"]) == user
+                        or member["firstName"] + " " + member["lastName"] == user
+                        or ("profile" in member and member["profile"]["id"] == user)
+                    ):
+                        return member
+                    if "guardians" in member:
+                        for guardian in member["guardians"]:
+                            if (
+                                guardian["id"] == user
+                                or ("email" in guardian and guardian["email"]) == user
+                                or guardian["firstName"] + " " + guardian["lastName"]
+                                == user
+                                or (
+                                    "profile" in guardian
+                                    and guardian["profile"]["id"] == user
+                                )
+                            ):
+                                return guardian
         errmsg = f"No person matched with identifier '{user}'."
         raise KeyError(errmsg)
 
@@ -324,9 +326,10 @@ class Spond(_SpondBase):
         """
         if not self.events:
             await self.get_events()
-        for event in self.events:
-            if event["id"] == uid:
-                break
+        if is_list_of_dict(self.events):
+            for event in self.events:
+                if event["id"] == uid:
+                    break
 
         url = f"{self.api_url}sponds/{uid}"
 
