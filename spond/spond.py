@@ -331,7 +331,7 @@ class Spond(_SpondBase):
         return await self._get_entity(self._EVENT, uid)
 
     @_SpondBase.require_authentication
-    async def update_event(self, uid: str, updates: JSONDict):
+    async def update_event(self, uid: str, updates: JSONDict) -> JSONDict:
         """
         Updates an existing event.
 
