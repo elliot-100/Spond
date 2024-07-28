@@ -9,59 +9,60 @@ import asyncio
 import tempfile
 
 from config import club_id, password, username
-from spond import DictFromJSON, club, spond
+from spond import DictFromJSON, chat, club, spond
 
 DUMMY_ID = "DUMMY_ID"
 
 
-async def main() -> None:
-    s = spond.Spond(username=username, password=password)
+async def main():
+    # s = spond.Spond(username=username, password=password)
 
     # GROUPS
 
-    print("\nGetting all groups...")
-    groups = await s.get_groups()
-    print(f"{len(groups)} groups:")
-    for i, group in enumerate(groups):
-        print(f"[{i}] {_group_summary(group)}")
-
-    # EVENTS
-
-    print("\nGetting up to 10 events...")
-    events = await s.get_events(max_events=10)
-    print(f"{len(events)} events:")
-    for i, event in enumerate(events):
-        print(f"[{i}] {_event_summary(event)}")
+    # print("\nGetting all groups...")
+    # groups = await s.get_groups()
+    # print(f"{len(groups)} groups:")
+    # for i, group in enumerate(groups):
+    #     print(f"[{i}] {_group_summary(group)}")
+    #
+    # # EVENTS
+    #
+    # print("\nGetting up to 10 events...")
+    # events = await s.get_events(max_events=10)
+    # print(f"{len(events)} events:")
+    # for i, event in enumerate(events):
+    #     print(f"[{i}] {_event_summary(event)}")
 
     # CHATS (MESSAGES)
-
-    print("\nGetting up to 10 chats...")
-    messages = await s.get_messages(max_chats=10)
-    print(f"{len(messages)} chats:")
-    for i, chat in enumerate(messages):
-        print(f"[{i}] {_message_summary(chat)}")
+    s_chat = chat.Chat(username=username, password=password)
+    print("\nGetting up to 100 chats...")
+    chat_messages = await s_chat.get_messages(maximum=100)
+    print(f"{len(chat_messages)} chats:")
+    # for i, chat in enumerate(messages):
+    #     print(f"[{i}] {_message_summary(chat)}")
+    return chat_messages
 
     # ATTENDANCE EXPORT
 
-    print("\nGetting attendance report for the first event...")
-    e = events[0]
-    data = await s.get_event_attendance_xlsx(e["id"])
-    with tempfile.NamedTemporaryFile(
-        mode="wb", suffix=".xlsx", delete=False
-    ) as temp_file:
-        temp_file.write(data)
-        print(f"Check out {temp_file.name}")
-
-    await s.clientsession.close()
+    # print("\nGetting attendance report for the first event...")
+    # e = events[0]
+    # data = await s.get_event_attendance_xlsx(e["id"])
+    # with tempfile.NamedTemporaryFile(
+    #     mode="wb", suffix=".xlsx", delete=False
+    # ) as temp_file:
+    #     temp_file.write(data)
+    #     print(f"Check out {temp_file.name}")
+    #
+    # await s.clientsession.close()
 
     # SPOND CLUB
-    sc = club.SpondClub(username=username, password=password)
-    print("\nGetting up to 10 transactions...")
-    transactions = await sc.get_transactions(club_id=club_id, max_items=10)
-    print(f"{len(transactions)} transactions:")
-    for i, t in enumerate(transactions):
-        print(f"[{i}] {_transaction_summary(t)}")
-    await sc.clientsession.close()
+    # sc = club.SpondClub(username=username, password=password)
+    # print("\nGetting up to 10 transactions...")
+    # transactions = await sc.get_transactions(club_id=club_id, max_items=10)
+    # print(f"{len(transactions)} transactions:")
+    # for i, t in enumerate(transactions):
+    #     print(f"[{i}] {_transaction_summary(t)}")
+    # await sc.clientsession.close()
 
 
 def _group_summary(group: DictFromJSON) -> str:
@@ -103,4 +104,4 @@ def _abbreviate(text, length) -> str:
 
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
-asyncio.run(main())
+messages = asyncio.run(main())
