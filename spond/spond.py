@@ -208,18 +208,16 @@ class Spond(_SpondBase):
         if self._auth is None:
             await self._login_chat()
 
-        if chat_id is not None:
+        if chat_id:
             return self._continue_chat(chat_id, text)
-        if group_uid is None or user is None:
-            return {
-                "error": "wrong usage, group_id and user_id needed or continue chat with chat_id"
-            }
+        if not group_uid or not user:
+            return {"error": "wrong usage, group_id and user_id needed or continue chat with chat_id"}
 
         user_obj = await self.get_person(user)
-        if user_obj:
-            user_uid = user_obj["profile"]["id"]
-        else:
+        if not user_obj:
             return False
+
+        user_uid = user_obj["profile"]["id"]
         url = f"{self._chat_url}/messages"
         data = {
             "text": text,
@@ -352,10 +350,7 @@ class Spond(_SpondBase):
 
         base_event = self._EVENT_TEMPLATE.copy()
         for key in base_event:
-            if event.get(key) is not None and not updates.get(key):
-                base_event[key] = event[key]
-            elif updates.get(key) is not None:
-                base_event[key] = updates[key]
+            base_event[key] = updates.get(key, event.get(key))
 
         async with self.clientsession.post(
             url, json=base_event, headers=self.auth_headers
