@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from spond import JSONDict
 from spond.base import _SpondBase
 from spond.spond import Spond
 
