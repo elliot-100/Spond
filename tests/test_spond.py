@@ -4,7 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from spond.base import _SpondBase
+# from spond.base import _SpondBase
 from spond.spond import Spond
 
 MOCK_USERNAME, MOCK_PASSWORD = "MOCK_USERNAME", "MOCK_PASSWORD"
@@ -13,14 +13,14 @@ MOCK_PAYLOAD = {"accepted": "false", "declineMessage": "sick cannot make it"}
 
 
 # Mock the `require_authentication` decorator to bypass authentication
-def mock_require_authentication(func):
-    async def wrapper(*args, **kwargs):
-        return await func(*args, **kwargs)
+# def mock_require_authentication(func):
+#     async def wrapper(*args, **kwargs):
+#         return await func(*args, **kwargs)
+#
+#     return wrapper
 
-    return wrapper
 
-
-_SpondBase.require_authentication = mock_require_authentication(Spond.get_event)
+# _SpondBase.require_authentication = mock_require_authentication(Spond.get_event)
 
 
 @pytest.fixture
