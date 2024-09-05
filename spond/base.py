@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 from collections.abc import Awaitable
 from typing import Callable, Self, Any
@@ -16,7 +18,7 @@ class _SpondBase(ABC):
         self.token = None
 
     @property
-    def auth_headers(self) -> dict:
+    def auth_headers(self) -> dict[str, str]:
         return {
             "content-type": "application/json",
             "Authorization": f"Bearer {self.token}",
