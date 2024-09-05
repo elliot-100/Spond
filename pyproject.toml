@@ -24,10 +24,25 @@ target-version = "py39"  # Ruff doesn't yet infer this from [tool.poetry.depende
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+    "B",
     "D100",  # Missing docstring in public module
-    "D104",  # Missing docstring in public package
+    "D101",  # ... class
+    "D102",  # ... method
+    "D103",  # ... function
+    "D104",  # ... package
+    "D202",  # No blank lines allowed after function docstring
     "D205",  # 1 blank line required between summary line and description
+    "D400",  # First line should end with a period
+    "D401",  # First line of docstring should be in imperative mood:
+    "D403",  # First word of the first line should be capitalized: `change` -> `Change`
     "E501",  # Line too long: needs code refactors first
+    "FBT",
+    "PLR",
+    "RET",
+    "S105",
+    "T201",  # print
+    "TRY",
+
     # Ignore rules that conflict with Ruff formatter:
     "COM812",  # Trailing comma missing
     "ISC001",  # Implicitly concatenated string literals on one line
@@ -43,9 +58,15 @@ ignore = [
 "manual_test_functions.py" = ["I001"]
 "transactions.py" = ["ANN", "I001"]
 
-# In tests:
-# - Don't enforce type annotations for now
-"**/{tests}/*" = ["ANN"]
+# Ignore rules that aren't relevant in tests:
+"**/{tests}/*" = [
+    "S101",  # Use of assert detected
+    "F841",  # Local variable is assigned to but never used (triggered by testing raises)
+]
+"base.py" = ["ANN001", "ANN002", "ANN003", "ANN202", "ANN205"]
+"spond.py" = ["ANN201", "ANN202"]
+"test_spond.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202"]
+
 
 [tool.mypy]  # TEMP dev
 enable_error_code = ["ignore-without-code"]  # Require specific codes for ignores
@@ -54,13 +75,6 @@ strict = true
 # disallow_any_unimported = true  # Disallow Any types resulting from unfollowed imports
 # no_implicit_optional = true  # Don't assume arguments with default values of None
 # are Optional
-
-tool.ruff.lint.per-file-ignores]
-# Ignore rules that aren't relevant in tests:
-"**/{tests}/*" = [
-    "S101",  # Use of assert detected
-    "F841",  # Local variable is assigned to but never used (triggered by testing raises)
-]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
