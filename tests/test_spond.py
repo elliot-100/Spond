@@ -31,12 +31,12 @@ _SpondBase.require_authentication = mock_require_authentication(Spond.get_event)
 
 
 @pytest.fixture
-def mock_token():
+def mock_token() -> str:
     return MOCK_TOKEN
 
 
 @pytest.fixture
-def mock_payload():
+def mock_payload() -> dict:
     return MOCK_PAYLOAD
 
 
@@ -57,7 +57,9 @@ class TestEventMethods:
         ]
 
     @pytest.mark.asyncio
-    async def test_get_event__happy_path(self, mock_events: list[JSONDict], mock_token):
+    async def test_get_event__happy_path(
+        self, mock_events: list[JSONDict], mock_token: str
+    ) -> None:
         """Test that a valid `id` returns the matching event."""
 
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
@@ -73,7 +75,8 @@ class TestEventMethods:
     @pytest.mark.asyncio
     async def test_get_event__no_match_raises_exception(
         self, mock_events: list[JSONDict], mock_token
-    ):
+    : str
+    ) -> None:
         """Test that a non-matched `id` raises KeyError."""
 
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
@@ -85,8 +88,8 @@ class TestEventMethods:
 
     @pytest.mark.asyncio
     async def test_get_event__blank_id_match_raises_exception(
-        self, mock_events: list[JSONDict], mock_token
-    ):
+        self, mock_events: list[JSONDict], mock_token: str
+    ) -> None:
         """Test that a blank `id` raises KeyError."""
 
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
@@ -98,7 +101,9 @@ class TestEventMethods:
 
     @pytest.mark.asyncio
     @patch("aiohttp.ClientSession.put")
-    async def test_change_response(self, mock_put, mock_payload, mock_token):
+    async def test_change_response(
+        self, mock_put, mock_payload: dict, mock_token: str
+    ) -> None:
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
         s.token = mock_token
 
@@ -145,7 +150,9 @@ class TestGroupMethods:
         ]
 
     @pytest.mark.asyncio
-    async def test_get_group__happy_path(self, mock_groups: list[JSONDict], mock_token):
+    async def test_get_group__happy_path(
+        self, mock_groups: list[JSONDict], mock_token: str
+    ) -> None:
         """Test that a valid `id` returns the matching group."""
 
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
@@ -161,7 +168,8 @@ class TestGroupMethods:
     @pytest.mark.asyncio
     async def test_get_group__no_match_raises_exception(
         self, mock_groups: list[JSONDict], mock_token
-    ):
+    : str
+    ) -> None:
         """Test that a non-matched `id` raises KeyError."""
 
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
@@ -174,7 +182,8 @@ class TestGroupMethods:
     @pytest.mark.asyncio
     async def test_get_group__blank_id_raises_exception(
         self, mock_groups: list[JSONDict], mock_token
-    ):
+    : str
+    ) -> None:
         """Test that a blank `id` raises KeyError."""
 
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
@@ -188,7 +197,7 @@ class TestGroupMethods:
 class TestExportMethod:
     @pytest.mark.asyncio
     @patch("aiohttp.ClientSession.get")
-    async def test_get_export(self, mock_get, mock_token):
+    async def test_get_export(self, mock_get, mock_token: str) -> None:
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
         s.token = mock_token
 
