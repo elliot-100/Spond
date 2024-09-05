@@ -26,15 +26,50 @@ ruff = "^0.9.6"
 target-version = "py39"  # Ruff doesn't yet infer this from [tool.poetry.dependencies]
 
 [tool.ruff.lint]
-select = [
-    "E",  # pycodestyle
-    "F",  # Pyflakes
-    "I",  # isort
-    "SIM",  # flake8-simplify
-]
+select = ["ALL"]
 ignore = [
-    "E501",  # Line too long: needs code refactors first
+# Rules that conflict with Ruff formatter
+    "COM812",  # Trailing comma missing
+    "ISC001",  # Implicitly concatenated string literals on one line
+# Ignore other rules:
+    # "ANN001",  # Missing type annotation for ... function argument
+    # "ANN002",  # ... `**args`
+    # "ANN003",  # ... `**kwargs`
+    # "ANN201",  # Missing return type annotation for ... public function
+    # "ANN202",  #  ... private function
+    # "ANN205",  # ... staticmethod
+    "B",
+    "D100",  # Missing docstring in public module
+    "D101",  # ... class
+    "D102",  # ... method
+    "D103",  # ... function
+    "D104",  # ... package
+    "D202",  # No blank lines allowed after function docstring
+    "D205",  # 1 blank line required between summary line and description
+    "D400",  # First line should end with a period
+    "D401",  # First line of docstring should be in imperative mood:
+    "D403",  # First word of the first line should be capitalized: `change` -> `Change`
+    "E501",  # Line too long
+    "FBT",
+    "PLR",
+    "RET",
+    "S105",
+    "T201",  # print
+    "TRY",
+    # "UP"
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore rules that aren't relevant in tests:
+    # S101 Use of assert detected
+    # F841 Local variable is assigned to but never used (triggered by testing raises)
+"**/{tests}/*" = ["S101", "F841"]
+"base.py" = ["ANN001", "ANN002", "ANN003", "ANN202", "ANN205"]
+"spond.py" = ["ANN201", "ANN202"]
+"test_spond.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.mypy]  # TEMP dev
 enable_error_code = ["ignore-without-code"]  # Require specific codes for ignores
@@ -43,38 +78,6 @@ strict = true
 # disallow_any_unimported = true  # Disallow Any types resulting from unfollowed imports
 # no_implicit_optional = true  # Don't assume arguments with default values of None
 # are Optional
-
-[tool.ruff]
-target-version = "py38"  # Ruff doesn't respect Python dependency in [tool.poetry
-# .dependencies]
-
-[tool.ruff.lint]
-
-select = ["ALL"]
-
-# Ignore rules that conflict with Ruff formatter:
-    # COM812 Trailing comma missing
-    # ISC001 Implicitly concatenated string literals on one line
-
-# Ignore other rules:
-    # D205 1 blank line required between summary line and description
-
-ignore = ["COM812", "ISC001", "D205",
-
-# gradual
-    # D104 Missing docstring in public package
-    # D100 Missing docstring in public module
-"D104","D100",
-]
-
-[tool.ruff.lint.per-file-ignores]
-# Ignore rules that aren't relevant in tests:
-    # S101 Use of assert detected
-    # F841 Local variable is assigned to but never used (triggered by testing raises)
-"**/{tests}/*" = ["S101", "F841"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "numpy"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
