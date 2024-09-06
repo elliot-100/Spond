@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar
 
-from . import JSONDict
+from . import JSONDict, validate_list_of_data_dicts
 from ._event_template import _EVENT_TEMPLATE
 from .base import _SpondBase
 
@@ -145,8 +145,7 @@ class Spond(_SpondBase):
         """
         url = f"{self.api_url}groups/"
         async with self.clientsession.get(url, headers=self.auth_headers) as r:
-            self.groups = await r.json()
-            return self.groups
+            return validate_list_of_data_dicts(r.json())
 
     async def get_group(self, uid: str) -> JSONDict:
         """Look up a single group by its unique id.
@@ -534,8 +533,7 @@ class Spond(_SpondBase):
                 raise ValueError(
                     f"Request failed with status {r.status}: {error_details}"
                 )
-            self.events = await r.json()
-            return self.events
+            return validate_list_of_data_dicts(r.json())
 
     async def get_event(self, uid: str) -> JSONDict:
         """Look up a single event by its unique id.
