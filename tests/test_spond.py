@@ -40,6 +40,15 @@ def mock_payload() -> JSONDict:
     return MOCK_PAYLOAD
 
 
+@pytest.fixture
+def mock_not_list_data_dicts(self) -> JSONDict:
+    """Mock a return that is a dict, instead of expected list of dicts."""
+    return {
+        "id": "ID1",
+        "name": "Instance One",
+    }
+
+
 class TestEventMethods:
     @pytest.fixture
     def mock_events(self) -> list[JSONDict]:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 from typing import Any
 
@@ -15,3 +17,28 @@ class AuthenticationError(Exception):
     """Error raised on Spond authentication failure."""
 
     pass
+
+
+def is_list_of_data_dicts(data: list[JSONDict]) -> bool:
+    """Return True if `data` is a list of data dicts.
+
+    Raise TypeError with relevant message if not.
+    """
+    if not isinstance(data, list):
+        err_msg = f"Expected a list, got {type(data)}: '{data}'."
+        raise TypeError(err_msg)
+    return all(is_data_dict(item) for item in data)
+
+
+def is_data_dict(data: JSONDict) -> bool:
+    """Return True if `data` is a dict with key `id`, i.e. looks like Spond data.
+
+    Raise TypeError with relevant message if not.
+    """
+    if not isinstance(data, dict):
+        err_msg = f"Expected a dict, got {type(data)}: '{data}'."
+        raise TypeError(err_msg)
+    if data.get("id"):
+        return True
+    err_msg = f"Expected key `id`; got keys '{data.keys}'."
+    raise TypeError(err_msg)

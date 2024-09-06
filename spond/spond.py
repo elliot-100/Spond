@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar
 
+from . import is_list_of_data_dicts
 from ._event_template import _EVENT_TEMPLATE
 from .base import _SpondBase
 
@@ -49,8 +50,10 @@ class Spond(_SpondBase):
         """
         url = f"{self.api_url}groups/"
         async with self.clientsession.get(url, headers=self.auth_headers) as r:
-            self.groups = await r.json()
-            return self.groups
+            groups_data = await r.json()
+            if is_list_of_data_dicts(groups_data) or groups_data is None:
+                self.groups = groups_data
+                return self.groups
 
     async def get_group(self, uid: str) -> JSONDict:
         """
@@ -304,8 +307,10 @@ class Spond(_SpondBase):
         async with self.clientsession.get(
             url, headers=self.auth_headers, params=params
         ) as r:
-            self.events = await r.json()
-            return self.events
+            events_data = await r.json()
+            if is_list_of_data_dicts(events_data) or events_data is None:
+                self.groups = events_data
+                return self.events
 
     async def get_event(self, uid: str) -> JSONDict:
         """
