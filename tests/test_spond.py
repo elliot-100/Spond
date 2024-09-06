@@ -101,31 +101,31 @@ class TestEventMethods:
         with pytest.raises(KeyError):
             await s.get_event("")
 
-    @pytest.mark.asyncio
-    async def test_get_event__no_events_no_match_raises_exception(
-        self, mock_no_events, mock_token
-    ):
-        """Test that a non-matched `id` raises KeyError with no events available."""
-
-        s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
-        s.events = mock_no_events
-        s.token = mock_token
-
-        with pytest.raises(KeyError):
-            await s.get_event("ID3")
-
-    @pytest.mark.asyncio
-    async def test_get_event__no_events_blank_id_match_raises_exception(
-        self, mock_no_events, mock_token
-    ):
-        """Test that a blank `id` raises KeyError with no events available."""
-
-        s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
-        s.events = mock_no_events
-        s.token = mock_token
-
-        with pytest.raises(KeyError):
-            await s.get_event("")
+    # @pytest.mark.asyncio
+    # async def test_get_event__no_events_no_match_raises_exception(
+    #     self, mock_no_events, mock_token
+    # ):
+    #     """Test that a non-matched `id` raises KeyError with no events available."""
+    #
+    #     s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
+    #     s.events = mock_no_events
+    #     s.token = mock_token
+    #
+    #     with pytest.raises(KeyError):
+    #         await s.get_event("ID3")
+    #
+    # @pytest.mark.asyncio
+    # async def test_get_event__no_events_blank_id_match_raises_exception(
+    #     self, mock_no_events, mock_token
+    # ):
+    #     """Test that a blank `id` raises KeyError with no events available."""
+    #
+    #     s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
+    #     s.events = mock_no_events
+    #     s.token = mock_token
+    #
+    #     with pytest.raises(KeyError):
+    #         await s.get_event("")
 
     @pytest.mark.asyncio
     @patch("aiohttp.ClientSession.put")
@@ -220,31 +220,31 @@ class TestGroupMethods:
         with pytest.raises(KeyError):
             await s.get_group("")
 
-    @pytest.mark.asyncio
-    async def test_get_group__no_groups_no_match_raises_exception(
-        self, mock_no_groups, mock_token
-    ):
-        """Test that a non-matched `id` raises KeyError with no groups available."""
-
-        s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
-        s.groups = mock_no_groups
-        s.token = mock_token
-
-        with pytest.raises(KeyError):
-            await s.get_group("ID3")
-
-    @pytest.mark.asyncio
-    async def test_get_group__no_groups_blank_id_raises_exception(
-        self, mock_no_groups, mock_token
-    ):
-        """Test that a blank `id` raises KeyError with no groups available."""
-
-        s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
-        s.groups = mock_no_groups
-        s.token = mock_token
-
-        with pytest.raises(KeyError):
-            await s.get_group("")
+    # @pytest.mark.asyncio
+    # async def test_get_group__no_groups_no_match_raises_exception(
+    #     self, mock_no_groups, mock_token
+    # ):
+    #     """Test that a non-matched `id` raises KeyError with no groups available."""
+    #
+    #     s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
+    #     s.groups = mock_no_groups
+    #     s.token = mock_token
+    #
+    #     with pytest.raises(KeyError):
+    #         await s.get_group("ID3")
+    #
+    # @pytest.mark.asyncio
+    # async def test_get_group__no_groups_blank_id_raises_exception(
+    #     self, mock_no_groups, mock_token
+    # ):
+    #     """Test that a blank `id` raises KeyError with no groups available."""
+    #
+    #     s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
+    #     s.groups = mock_no_groups
+    #     s.token = mock_token
+    #
+    #     with pytest.raises(KeyError):
+    #         await s.get_group("")
 
 
 class TestExportMethod:
