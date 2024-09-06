@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, ClassVar
 
-from . import JSONDict
+from . import JSONDict, is_list_spond_data_dict
 from ._event_template import _EVENT_TEMPLATE
 from .base import _SpondBase
 
@@ -48,8 +48,10 @@ class Spond(_SpondBase):
         """
         url = f"{self.api_url}groups/"
         async with self.clientsession.get(url, headers=self.auth_headers) as r:
-            self.groups = await r.json()
-            return self.groups
+            groups_data = await r.json()
+            if is_list_spond_data_dict(groups_data):
+                self.groups = groups_data
+                return self.groups
 
     async def get_group(self, uid: str) -> JSONDict:
         """
@@ -321,8 +323,10 @@ class Spond(_SpondBase):
                 raise ValueError(
                     f"Request failed with status {r.status}: {error_details}"
                 )
-            self.events = await r.json()
-            return self.events
+            events_data = await r.json()
+            if is_list_spond_data_dict(events_data):
+                self.groups = events_data
+                return self.events
 
     async def get_event(self, uid: str) -> JSONDict:
         """
