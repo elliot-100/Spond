@@ -227,8 +227,8 @@ class TestGroupMethods:
         """Test that a non-matched `id` raises KeyError with no groups available."""
 
         s = Spond(MOCK_USERNAME, MOCK_PASSWORD)
-        s.groups = mock_no_groups
         s.token = mock_token
+        s.groups = mock_no_groups
 
         with pytest.raises(KeyError):
             await s.get_group("ID3")

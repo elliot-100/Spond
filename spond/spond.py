@@ -311,6 +311,7 @@ class Spond(_SpondBase):
             self.events = await r.json()
             return self.events
 
+    @_SpondBase.require_authentication
     async def get_event(self, uid: str) -> JSONDict:
         """
         Get an event by unique ID.
@@ -481,19 +482,24 @@ class Spond(_SpondBase):
 
         """
         if entity_type == self._EVENT:
-            if not self.events:
-                await self.get_events()
+            # if not self.events:
+            #     await self.get_events()
             entities = self.events
         elif entity_type == self._GROUP:
-            if not self.groups:
-                await self.get_groups()
+            # if not self.groups:
+            #     await self.get_groups()
             entities = self.groups
         else:
             err_msg = f"Entity type '{entity_type}' is not supported."
             raise NotImplementedError(err_msg)
 
         for entity in entities:
+            try:
+                x = entity["id"]
+            except TypeError:
+                err_msg = f"{entity}"
+                raise TypeError(f"entities: {entities}")
             if entity["id"] == uid:
                 return entity
-        errmsg = f"No {entity_type} with id='{uid}'."
+        errmsg = f"No {entity_type} with id='{uid}'. entities={entities}"
         raise KeyError(errmsg)
