@@ -23,13 +23,11 @@ class _SpondBase(ABC):
 
     @staticmethod
     def require_authentication(func: Callable):
+        """Decorator for functions which require session to be authenticated."""
+
         async def wrapper(self, *args, **kwargs):
             if not self.token:
-                try:
-                    await self.login()
-                except AuthenticationError as e:
-                    await self.clientsession.close()
-                    raise e
+                await self.login()
             return await func(self, *args, **kwargs)
 
         return wrapper
@@ -42,4 +40,5 @@ class _SpondBase(ABC):
             self.token = login_result.get("loginToken")
             if self.token is None:
                 err_msg = f"Login failed. Response received: {login_result}"
+                await self.clientsession.close()
                 raise AuthenticationError(err_msg)
