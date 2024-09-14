@@ -7,7 +7,6 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from spond.base import _SpondBase
 from spond.spond import Spond
 
 if TYPE_CHECKING:
@@ -15,17 +14,6 @@ if TYPE_CHECKING:
 
 
 MOCK_USERNAME, MOCK_PASSWORD = "MOCK_USERNAME", "MOCK_PASSWORD"
-
-
-# Mock the `require_authentication` decorator to bypass authentication
-def mock_require_authentication(func):
-    async def wrapper(*args, **kwargs):
-        return await func(*args, **kwargs)
-
-    return wrapper
-
-
-_SpondBase.require_authentication = mock_require_authentication(Spond.get_event)
 
 
 @pytest.fixture
