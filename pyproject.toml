@@ -38,6 +38,8 @@ strict = true
 [tool.ruff]
 target-version = "py38"  # Ruff doesn't respect Python dependency in [tool.poetry
 # .dependencies]
+exclude = ["."]
+include = ["spond/*.py", "tests/*.py"]
 
 [tool.ruff.lint]
 
