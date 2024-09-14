@@ -69,7 +69,6 @@ ignore = [
     "E501",  # Line too long
     "FBT",
     "PLR",
-    "RET",
     "S105",
     "T201",  # print
     "TRY",
