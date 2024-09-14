@@ -100,26 +100,14 @@ class Spond(_SpondBase):
             await self.get_groups()
         for group in self.groups:
             for member in group["members"]:
-                if (
-                    member["id"] == user
-                    or ("email" in member and member["email"]) == user
-                    or member["firstName"] + " " + member["lastName"] == user
-                    or ("profile" in member and member["profile"]["id"] == user)
-                ):
-                    return member
+                person = self._match_person(member, user)
+                if person:
+                    return person
                 if "guardians" in member:
                     for guardian in member["guardians"]:
-                        if (
-                            guardian["id"] == user
-                            or ("email" in guardian and guardian["email"]) == user
-                            or guardian["firstName"] + " " + guardian["lastName"]
-                            == user
-                            or (
-                                "profile" in guardian
-                                and guardian["profile"]["id"] == user
-                            )
-                        ):
-                            return guardian
+                        person = self._match_person(guardian, user)
+                        if person:
+                            return person
         errmsg = f"No person matched with identifier '{user}'."
         raise KeyError(errmsg)
 
@@ -459,3 +447,14 @@ class Spond(_SpondBase):
                 return entity
         errmsg = f"No {entity_type} with id='{uid}'."
         raise KeyError(errmsg)
+
+    @staticmethod
+    def _match_person(person: JSONDict, user: str) -> JSONDict | None:
+        if (
+            person["id"] == user
+            or ("email" in person and person["email"]) == user
+            or person["firstName"] + " " + person["lastName"] == user
+            or ("profile" in person and person["profile"]["id"] == user)
+        ):
+            return person
+        return None
