@@ -15,8 +15,6 @@ if TYPE_CHECKING:
 
 
 MOCK_USERNAME, MOCK_PASSWORD = "MOCK_USERNAME", "MOCK_PASSWORD"
-MOCK_TOKEN = "MOCK_TOKEN"
-MOCK_PAYLOAD = {"accepted": "false", "declineMessage": "sick cannot make it"}
 
 
 # Mock the `require_authentication` decorator to bypass authentication
@@ -31,13 +29,8 @@ _SpondBase.require_authentication = mock_require_authentication(Spond.get_event)
 
 
 @pytest.fixture
-def mock_token():
-    return MOCK_TOKEN
-
-
-@pytest.fixture
-def mock_payload():
-    return MOCK_PAYLOAD
+def mock_token() -> str:
+    return "MOCK_TOKEN"
 
 
 class TestEventMethods:
@@ -55,6 +48,10 @@ class TestEventMethods:
                 "name": "Event Two",
             },
         ]
+
+    @pytest.fixture
+    def mock_payload(self):
+        return {"accepted": "false", "declineMessage": "sick cannot make it"}
 
     @pytest.mark.asyncio
     async def test_get_event__happy_path(self, mock_events: list[JSONDict], mock_token):
