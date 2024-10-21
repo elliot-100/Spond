@@ -364,7 +364,7 @@ class Spond(_SpondBase):
 
         """
         event = await self._get_entity(self._EVENT, uid)
-        url = f"{self.api_url}sponds/{uid}"
+        url = self._event_url(uid)
 
         base_event = self._EVENT_TEMPLATE.copy()
         for key in base_event:
@@ -393,7 +393,7 @@ class Spond(_SpondBase):
         -------
             bytes: XLSX binary data
         """
-        url = f"{self.api_url}sponds/{uid}/export"
+        url = f"{self._event_url(uid)}export"
         async with self.clientsession.get(url, headers=self.auth_headers) as r:
             return await r.read()
 
@@ -417,7 +417,7 @@ class Spond(_SpondBase):
         JSONDict
             event["responses"] with updated info
         """
-        url = f"{self.api_url}sponds/{uid}/responses/{user}"
+        url = f"{self._event_url(uid)}responses/{user}"
         async with self.clientsession.put(
             url, headers=self.auth_headers, json=payload
         ) as r:
@@ -465,3 +465,7 @@ class Spond(_SpondBase):
                 return entity
         errmsg = f"No {entity_type} with id='{uid}'."
         raise KeyError(errmsg)
+
+    def _event_url(self, uid: str) -> str:
+        """Returns URL of the event."""
+        return f"{self.api_url}sponds/{uid}/"
