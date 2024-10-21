@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, ClassVar
 
 from .base import _SpondBase
+from . import is_list_of_dicts
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -48,7 +49,10 @@ class Spond(_SpondBase):
         """
         url = f"{self.api_url}groups/"
         async with self.clientsession.get(url, headers=self.auth_headers) as r:
-            self.groups = await r.json()
+            groups_data = await r.json()
+            if not is_list_of_dicts(groups_data):
+                raise ValueError
+            self.groups = groups_data
             return self.groups
 
     async def get_group(self, uid: str) -> JSONDict:
@@ -308,7 +312,10 @@ class Spond(_SpondBase):
         async with self.clientsession.get(
             url, headers=self.auth_headers, params=params
         ) as r:
-            self.events = await r.json()
+            events_data = await r.json()
+            if not is_list_of_dicts(events_data):
+                raise ValueError
+            self.events = events_data
             return self.events
 
     async def get_event(self, uid: str) -> JSONDict:
