@@ -1,5 +1,6 @@
 from abc import ABC
-from typing import Callable
+from collections.abc import Awaitable
+from typing import Callable, Self, Any
 
 import aiohttp
 
@@ -22,14 +23,10 @@ class _SpondBase(ABC):
         }
 
     @staticmethod
-    def require_authentication(func: Callable):
-        async def wrapper(self, *args, **kwargs):
+    def require_authentication(func: Callable) -> Callable:
+        async def wrapper(self: Self, *args: Any, **kwargs: Any) -> Awaitable:
             if not self.token:
-                try:
-                    await self.login()
-                except AuthenticationError as e:
-                    await self.clientsession.close()
-                    raise e
+                await self.login()
             return await func(self, *args, **kwargs)
 
         return wrapper
