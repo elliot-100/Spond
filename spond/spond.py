@@ -71,7 +71,10 @@ class Spond(_SpondBase):
         KeyError if no group is matched.
 
         """
-        return await self._get_entity(self._GROUP, uid)
+        entity = await self._get_entity(self._GROUP, uid)
+        if not isinstance(entity, dict):
+            raise TypeError
+        return entity
 
     @_SpondBase.require_authentication
     async def get_person(self, user: str) -> JSONDict:
@@ -99,10 +102,14 @@ class Spond(_SpondBase):
         for group in self.groups:
             for member in group["members"]:
                 if self._match_person(member, user):
+                    if not isinstance(member, dict):
+                        raise TypeError
                     return member
                 if "guardians" in member:
                     for guardian in member["guardians"]:
                         if self._match_person(guardian, user):
+                            if not isinstance(guardian, dict):
+                                raise TypeError
                             return guardian
         errmsg = f"No person matched with identifier '{user}'."
         raise KeyError(errmsg)
@@ -170,7 +177,10 @@ class Spond(_SpondBase):
         url = f"{self._chat_url}/messages"
         data = {"chatId": chat_id, "text": text, "type": "TEXT"}
         r = await self.clientsession.post(url, json=data, headers={"auth": self._auth})
-        return await r.json()
+        result = r.json
+        if not isinstance(result, dict):
+            raise TypeError
+        return result
 
     @_SpondBase.require_authentication
     async def send_message(
@@ -207,7 +217,10 @@ class Spond(_SpondBase):
             await self._login_chat()
 
         if chat_id is not None:
-            return self._continue_chat(chat_id, text)
+            result_data = self._continue_chat(chat_id, text)
+            if not isinstance(result_data, dict):
+                raise TypeError
+            return result_data
         if group_uid is None or user is None:
             return {
                 "error": "wrong usage, group_id and user_id needed or continue chat with chat_id"
@@ -225,8 +238,11 @@ class Spond(_SpondBase):
             "recipient": user_uid,
             "groupId": group_uid,
         }
-        r = await self.clientsession.post(url, json=data, headers={"auth": self._auth})
-        return await r.json()
+        result = await self.clientsession.post(url, json=data, headers={"auth": self._auth})
+        result_data = result.json()
+        if not isinstance(result_data, dict):
+            raise TypeError
+        return result_data
 
     @_SpondBase.require_authentication
     async def get_events(
@@ -421,7 +437,10 @@ class Spond(_SpondBase):
         async with self.clientsession.put(
             url, headers=self.auth_headers, json=payload
         ) as r:
-            return await r.json()
+            response_data = await r.json()
+            if not isinstance(response_data, dict):
+                raise TypeError()
+            return response_data
 
     @_SpondBase.require_authentication
     async def _get_entity(self, entity_type: str, uid: str) -> JSONDict:
