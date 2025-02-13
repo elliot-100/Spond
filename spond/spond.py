@@ -23,8 +23,8 @@ class Spond(_SpondBase):
         super().__init__(username, password, self._API_BASE_URL)
         self._chat_url = None
         self._auth = None
-        self.groups: list[JSONDict] | None = None
-        self.events: list[JSONDict] | None = None
+        self.groups: list[JSONDict] = []
+        self.events: list[JSONDict] = []
         self.messages: list[JSONDict] | None = None
 
     async def _login_chat(self) -> None:
@@ -35,7 +35,7 @@ class Spond(_SpondBase):
         self._auth = result["auth"]
 
     @_SpondBase.require_authentication
-    async def get_groups(self) -> list[JSONDict] | None:
+    async def get_groups(self) -> list[JSONDict]:
         """
         Retrieve all groups, subject to authenticated user's access.
 
@@ -240,7 +240,7 @@ class Spond(_SpondBase):
         max_start: datetime | None = None,
         min_start: datetime | None = None,
         max_events: int = 100,
-    ) -> list[JSONDict] | None:
+    ) -> list[JSONDict]:
         """
         Retrieve events.
 
