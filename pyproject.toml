@@ -26,6 +26,8 @@ target-version = "py39"  # Ruff doesn't yet infer this from [tool.poetry.depende
 [tool.ruff.lint]
 select = [
     "ANN201",  # Missing return type annotation for public function
+    "ANN205",  # ... static method
+    "ANN206",  # ... class method
     "E",  # pycodestyle
     "F",  # Pyflakes
     "I",  # isort
