@@ -11,6 +11,7 @@ Not intended to be instantiated directly — use a subclass.
 import functools
 from abc import ABC
 from collections.abc import Callable
+from dataclasses import dataclass, field
 
 import aiohttp
 
@@ -23,6 +24,7 @@ from spond import AuthenticationError
 _SAFE_LOGIN_ERROR_FIELDS = ("error", "errorKey", "errorCode", "message")
 
 
+@dataclass(kw_only=True)
 class _SpondBase(ABC):
     """Abstract base for Spond API clients.
 
@@ -31,25 +33,14 @@ class _SpondBase(ABC):
     `require_authentication` decorator, and the `login()` flow.
     """
 
-    def __init__(self, username: str, password: str, api_url: str) -> None:
-        """Initialise credentials and open the aiohttp session.
+    username: str
+    password: str
+    api_url: str
+    client_session: aiohttp.ClientSession = field(init=False)
+    token: None = field(init=False)
 
-        Parameters
-        ----------
-        username : str
-            Spond account email address.
-        password : str
-            Spond account password.
-        api_url : str
-            Base URL for the API family this client targets (consumer or
-            club). Must end with a trailing slash so relative paths can be
-            concatenated.
-        """
-        self.username = username
-        self.password = password
-        self.api_url = api_url
-        self.clientsession = aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar())
-        self.token = None
+    def __post_init__(self) -> None:
+        self.client_session = aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar())
 
     @property
     def auth_headers(self) -> dict:
@@ -90,7 +81,7 @@ class _SpondBase(ABC):
         """
         login_url = f"{self.api_url}auth2/login"
         data = {"email": self.username, "password": self.password}
-        async with self.clientsession.post(login_url, json=data) as r:
+        async with self.client_session.post(login_url, json=data) as r:
             login_result = await r.json()
         self.token = self._extract_access_token(login_result)
 

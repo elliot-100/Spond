@@ -9,6 +9,7 @@ events, posts, and chats. For the separate Spond Club finance API, see
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, ClassVar
 
 from . import JSONDict
@@ -18,7 +19,10 @@ from .base import _SpondBase
 if TYPE_CHECKING:
     from datetime import datetime
 
+_API_BASE_URL = "https://api.spond.com/core/v1/"
 
+
+@dataclass
 class Spond(_SpondBase):
     """Async client for the Spond consumer API.
 
@@ -67,31 +71,21 @@ class Spond(_SpondBase):
     _EVENT: ClassVar = "event"
     _GROUP: ClassVar = "group"
 
-    def __init__(self, username: str, password: str) -> None:
-        """Construct a Spond client.
+    groups: list[JSONDict] | None = None
+    events: list[JSONDict] | None = None
+    posts: list[JSONDict] | None = None
+    messages: list[JSONDict] | None = None
+    messages: list[JSONDict] | None = None
+    profile: JSONDict | None = None
 
-        The credentials are stored on the instance and used to obtain an access
-        token on the first authenticated call. An aiohttp `ClientSession` is
-        opened immediately; close it via `await s.clientsession.close()`
-        (where `s` is the constructed instance) when finished, to avoid
-        `Unclosed client session` warnings.
 
-        Parameters
-        ----------
-        username : str
-            Spond account email address.
-        password : str
-            Spond account password. For accounts with 2FA enabled, login will
-            currently fail — Spond's TOTP flow is not yet supported.
-        """
-        super().__init__(username, password, self._API_BASE_URL)
-        self._chat_url = None
-        self._auth = None
-        self.groups: list[JSONDict] | None = None
-        self.events: list[JSONDict] | None = None
-        self.posts: list[JSONDict] | None = None
-        self.messages: list[JSONDict] | None = None
-        self.profile: JSONDict | None = None
+_chat_url = None
+    _auth = None
+
+    def __init__(
+        self, username: str, password: str, api_url: str = _API_BASE_URL
+    ) -> None:
+        super().__init__(username=username, password=password, api_url=api_url)
 
     async def _login_chat(self) -> None:
         """Perform the secondary handshake with Spond's chat server.
@@ -104,7 +98,7 @@ class Spond(_SpondBase):
         client.
         """
         api_chat_url = f"{self.api_url}chat"
-        r = await self.clientsession.post(api_chat_url, headers=self.auth_headers)
+        r = await self.client_session.post(api_chat_url, headers=self.auth_headers)
         result = await r.json()
         self._chat_url = result["url"]
         self._auth = result["auth"]
@@ -144,7 +138,7 @@ class Spond(_SpondBase):
             account has no groups at all.
         """
         url = f"{self.api_url}groups/"
-        async with self.clientsession.get(url, headers=self.auth_headers) as r:
+        async with self.client_session.get(url, headers=self.auth_headers) as r:
             self.groups = await r.json()
             return self.groups
 
@@ -323,7 +317,7 @@ class Spond(_SpondBase):
         if not self._auth:
             await self._login_chat()
         url = f"{self._chat_url}/chats/"
-        async with self.clientsession.get(
+        async with self.client_session.get(
             url,
             headers={"auth": self._auth},
             params={"max": str(max_chats)},
@@ -354,7 +348,7 @@ class Spond(_SpondBase):
             await self._login_chat()
         url = f"{self._chat_url}/messages"
         data = {"chatId": chat_id, "text": text, "type": "TEXT"}
-        r = await self.clientsession.post(url, json=data, headers={"auth": self._auth})
+        r = await self.client_session.post(url, json=data, headers={"auth": self._auth})
         return await r.json()
 
     @_SpondBase.require_authentication
@@ -427,7 +421,7 @@ class Spond(_SpondBase):
             "recipient": user_uid,
             "groupId": group_uid,
         }
-        r = await self.clientsession.post(url, json=data, headers={"auth": self._auth})
+        r = await self.client_session.post(url, json=data, headers={"auth": self._auth})
         return await r.json()
 
     @_SpondBase.require_authentication
@@ -526,7 +520,7 @@ class Spond(_SpondBase):
         if include_hidden:
             params["includeHidden"] = "true"
 
-        async with self.clientsession.get(
+        async with self.client_session.get(
             url, headers=self.auth_headers, params=params
         ) as r:
             if not r.ok:
@@ -635,7 +629,7 @@ class Spond(_SpondBase):
             ```
         """
         url = f"{self.api_url}sponds/{uid}/export"
-        async with self.clientsession.get(url, headers=self.auth_headers) as r:
+        async with self.client_session.get(url, headers=self.auth_headers) as r:
             return await r.read()
 
     @_SpondBase.require_authentication
@@ -668,7 +662,7 @@ class Spond(_SpondBase):
             (`acceptedIds`, `declinedIds`, `unansweredIds`, etc.).
         """
         url = f"{self.api_url}sponds/{uid}/responses/{user}"
-        async with self.clientsession.put(
+        async with self.client_session.put(
             url, headers=self.auth_headers, json=payload
         ) as r:
             return await r.json()
