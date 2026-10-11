@@ -49,7 +49,7 @@ class _SpondBase(ABC):
         self.password = password
         self.api_url = api_url
         self.clientsession = aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar())
-        self.token = None
+        self.token: str | None = None
 
     @property
     def auth_headers(self) -> dict:
@@ -67,7 +67,7 @@ class _SpondBase(ABC):
         underlying aiohttp session before re-raising."""
 
         @functools.wraps(func)
-        async def wrapper(self, *args, **kwargs):
+        async def wrapper(self: _SpondBase, *args, **kwargs):
             if not self.token:
                 try:
                     await self.login()

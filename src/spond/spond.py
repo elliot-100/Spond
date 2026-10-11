@@ -85,8 +85,8 @@ class Spond(_SpondBase):
             currently fail — Spond's TOTP flow is not yet supported.
         """
         super().__init__(username, password, self._API_BASE_URL)
-        self._chat_url = None
-        self._auth = None
+        self._chat_url: str | None = None
+        self._auth: str | None = None
         self.groups: list[JSONDict] | None = None
         self.events: list[JSONDict] | None = None
         self.posts: list[JSONDict] | None = None
