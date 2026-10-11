@@ -3,7 +3,10 @@
 import asyncio
 from pathlib import Path
 
+# pyrefly: ignore [missing-import]
 from config import password, username
+
+# pyrefly: ignore [missing-import]
 from ics import Calendar, Event
 
 from spond import spond

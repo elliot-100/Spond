@@ -204,6 +204,7 @@ class Spond(_SpondBase):
         """
         if not self.groups:
             await self.get_groups()
+        # pyrefly: ignore [not-iterable]
         for group in self.groups:
             for member in group["members"]:
                 if self._match_person(member, user):
@@ -325,6 +326,7 @@ class Spond(_SpondBase):
         url = f"{self._chat_url}/chats/"
         async with self.clientsession.get(
             url,
+            # pyrefly: ignore [bad-assignment]
             headers={"auth": self._auth},
             params={"max": str(max_chats)},
         ) as r:
@@ -354,6 +356,7 @@ class Spond(_SpondBase):
             await self._login_chat()
         url = f"{self._chat_url}/messages"
         data = {"chatId": chat_id, "text": text, "type": "TEXT"}
+        # pyrefly: ignore [bad-assignment]
         r = await self.clientsession.post(url, json=data, headers={"auth": self._auth})
         return await r.json()
 
@@ -427,6 +430,7 @@ class Spond(_SpondBase):
             "recipient": user_uid,
             "groupId": group_uid,
         }
+        # pyrefly: ignore [bad-assignment]
         r = await self.clientsession.post(url, json=data, headers={"auth": self._auth})
         return await r.json()
 

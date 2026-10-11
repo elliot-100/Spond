@@ -9,6 +9,7 @@ Doesn't yet use `get_person(user)` or any `send_`, `update_` methods.
 import asyncio
 import tempfile
 
+# pyrefly: ignore [missing-import]
 from config import club_id, password, username
 from spond import club, spond, JSONDict
 

@@ -48,5 +48,8 @@ jobs:
       # Picks up config from `pyproject.toml`.
       run: uv run ruff format --check --diff
 
+    - name: Check typing with pyrefly
+      uses: facebook/pyrefly@main
+
     - name: Test with pytest
       run: uv run pytest

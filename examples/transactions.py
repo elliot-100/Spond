@@ -3,6 +3,7 @@ import asyncio
 import csv
 from pathlib import Path
 
+# pyrefly: ignore [missing-import]
 from config import club_id, password, username
 
 from spond.club import SpondClub

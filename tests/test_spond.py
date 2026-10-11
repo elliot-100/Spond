@@ -28,6 +28,7 @@ def mock_require_authentication(func):
     return wrapper
 
 
+# pyrefly: ignore [bad-assignment]
 _SpondBase.require_authentication = mock_require_authentication(Spond.get_event)
 
 

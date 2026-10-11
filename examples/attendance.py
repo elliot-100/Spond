@@ -5,6 +5,7 @@ import re
 from datetime import date
 from pathlib import Path
 
+# pyrefly: ignore [missing-import]
 from config import password, username
 
 from spond import spond
