@@ -23,7 +23,7 @@ build-backend = "uv_build"
 dev = [
     "pdoc==16.0.0",
     "pytest==9.0.2",
-    "pytest-asyncio==1.3.0",
+    "pytest-asyncio==1.4.0",
     "pytest-socket==0.7.0",
     "ruff==0.16.10",
     # Pin exact versions of dependencies for CI reproducibility
